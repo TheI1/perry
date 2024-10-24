@@ -12,7 +12,6 @@ var users = {
     test: {
         cmd_element: null,
         cmd_result: "",
-        os: "",
         names: [],
         admins: []
     },
@@ -24,8 +23,12 @@ var users = {
     needed: []
 }
 
-function copy_cmd(text) {
+function copy_usr_cmd(text) {
     navigator.clipboard.writeText("net users");
+}
+
+function copy_admin_cmd(text) {
+    navigator.clipboard.writeText("net localgroup administrators");
 }
 
 function load() {
@@ -39,12 +42,16 @@ function load() {
 function check() {
     check_target(users.target);
     check_cmd_out(users.test);
+    create_cmds();
+}
+
+function create_cmds() {
+
 }
 
 function check_cmd_out(test) {
-    if (change_cmd(test)) {
-        console.log(extract_user_from_net(test.cmd_result))
-    }
+    test.names = extract_user_from_net(test.cmd_result);
+    test.admins = extract_user_from_net()
 }
 
 function extract_user_from_net(out) {
