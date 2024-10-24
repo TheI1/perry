@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Perry Perry Perry</title>
+        <script src="perry.js"></script>
+        <link rel="stylesheet" href="perry.css">
+    </head>
+    <body onload="load()">
+        <table class="main_table"><tr>
+            <td class="middle_row">
+                SOURCE (the list of users from the README file) <br>
+                <textarea id="in_users"></textarea> <br>
+                <div id="debug_text"></div> <br>
+                <div>result of <div class="cmd_cp">net users</div>: <input type="button" value="copy command" onclick="copy_usr_cmd()"></div>
+                <textarea id="cmd_src"></textarea> <br>
+                <div>result of <div class="cmd_cp">net users</div>: <input type="button" value="copy command" onclick="copy_admin_cmd()"></div>
+                <textarea id="cmd_src"></textarea> <br>
+                <div id="final_cmd"></div>
+            </td>
+            <td class="middle_row">
+                World
+            </td>
+        </tr></table>
+    </body>
+</html>

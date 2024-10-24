@@ -1,0 +1,22 @@
+.middle_row {
+    width: 50%;
+    text-align: center;
+}
+
+.main_table {
+    width: 100%;
+}
+
+#in_users, #cmd_src {
+    width: 100%;
+}
+
+#debug_text {
+    color: red;
+}
+
+.cmd_cp {
+    background-color: lightgray;
+    width: max-content;
+    display: inline;
+}
