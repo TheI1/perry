@@ -11,6 +11,7 @@ var users = {
     },
     test: {
         cmd_element: null,
+        admin_element: null,
         cmd_result: "",
         names: [],
         admins: []
@@ -37,6 +38,7 @@ function load() {
     users.target.debug_text = document.getElementById("debug_text");
 
     users.test.cmd_element = document.getElementById("cmd_src");
+    users.test.admin_element = document.getElementById("cmd_src_admin");
 }
 
 function check() {
@@ -51,7 +53,7 @@ function create_cmds() {
 
 function check_cmd_out(test) {
     test.names = extract_user_from_net(test.cmd_result);
-    test.admins = extract_user_from_net()
+    test.admins = extract_user_from_net(test.admin_element.value)
 }
 
 function extract_user_from_net(out) {
