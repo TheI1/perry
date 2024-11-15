@@ -190,7 +190,7 @@ function parse_target(target, passwords) {
             }
         } else if (lo.includes("authorized users:")) {
             names.splice(i, 1);
-            split = i - 1;
+            split = i;
         } else if (lo == admin_header.slice(admin_header.length - lo.length)) {
             names.splice(i, 1);
         } else if (name) {
