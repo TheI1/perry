@@ -25,10 +25,33 @@ var users = {
     passwords: {},
     pass_btn: null,
     curr_usr: "",
-    final_cmd: "",
+    final_cmd: [],
     needed: [],
     cmd_out: null
 }
+
+var script_flag_container = null;
+var script_flags = [
+    {name:"user cmds", default: true, fnc: create_user_cmds, element: null},
+    {name:"enable firewall", default: true, fnc: firewall, element: null},
+    {name:"remove nc", default: true, fnc: nc, element: null},
+    {name:"password policy", default: true, fnc: pass_policy, element: null}
+];
+function firewall() {
+    users.final_cmd.push("netsh.exe advfirewall set allprofiles state on");
+    users.final_cmd.push("netsh advfirewall set allprofiles firewallpolicy blockinbound,allowoutbound");
+    users.final_cmd.push("netsh.exe advfirewall set allprofiles settings inboundusernotification enable");
+    users.final_cmd.push("netsh.exe advfirewall set allprofiles settings unicastresponsetomulticast enable");
+    users.final_cmd.push("netsh.exe advfirewall set allprofiles logging filename %SystemRoot%\\System32\\LogFiles\\Firewall\\pfirewall.log");
+}
+function nc() {
+    users.final_cmd.push("taskkill /IM “nc” /F");
+    users.final_cmd.push("del /f C:\\Windows\\nc.exe");
+}
+function pass_policy() {
+    users.final_cmd.push("net accounts /MINPWLEN:10 /MAXPWAGE:90 /UNIQUEPW:10");
+}
+
 
 function copy_usr_cmd(text) {
     navigator.clipboard.writeText("net users");
@@ -43,7 +66,7 @@ function copy_pass() {
 }
 
 function copy_final_cmd() {
-    navigator.clipboard.writeText(users.final_cmd);
+    navigator.clipboard.writeText(users.final_cmd.join(" & "));
 }
 
 function load() {
@@ -63,6 +86,21 @@ function load() {
     users.pass_btn = document.getElementById("copy-pass-btn");
 
     users.cmd_out = document.getElementById("cmd-out");
+
+    script_flag_container = document.getElementById("script-flags");
+    for (let flag_idx in script_flags) {
+        let flag = script_flags[flag_idx];
+        let chkbox = document.createElement("input");
+        chkbox.type = "checkbox";
+        chkbox.checked = flag.default;
+        flag.element = chkbox;
+        script_flag_container.appendChild(chkbox);
+        let lable = document.createElement("label");
+        lable.innerText = flag.name;
+        script_flag_container.appendChild(lable);
+        script_flag_container.appendChild(document.createElement("br"));
+    }
+
 }
 
 function check() {
@@ -75,9 +113,15 @@ function check() {
     users.admin_diff.innerText = `TO PROMOTE:\n${users.to_higher.join(" ")}\n\nTO DEMOTE:\n${users.to_lower.join(" ")}`
     users.name_diff.innerText = `TO DELETE:\n${users.to_remove.join(" ")}\n\nTO ADD:\n${users.needed.join(" ")}`
 
-    users.final_cmd = create_cmds();
+    users.final_cmd = [];
+    for (let flag_idx in script_flags) {
+        let flag = script_flags[flag_idx];
+        if (flag.element.checked) {
+            flag.fnc();
+        }
+    }
 
-    users.cmd_out.innerText = users.final_cmd;
+    users.cmd_out.innerText = users.final_cmd.join(" & ");
 }
 
 function catigorize_usrs() {
@@ -88,21 +132,19 @@ function catigorize_usrs() {
     users.to_lower = users.test.admins.filter(x => !users.target.admin_names.includes(x));
 }
 
-function create_cmds() {
-    let cmds = "echo.";
+function create_user_cmds() {
+    let cmds = users.final_cmd;
 
     for (let user in users.to_higher) {
-        cmds += ` & net localgroup administrators /add ${users.to_higher[user]}`;
+        cmds.push(`net localgroup administrators /add ${users.to_higher[user]}`);
     }
     for (let user in users.to_lower) {
-        cmds += ` & net localgroup administrators /delete ${users.to_lower[user]}`;
+        cmds.push(`net localgroup administrators /delete ${users.to_lower[user]}`);
     }
     for (let user in users.to_remove) {
-        cmds += ` & net user /delete ${users.to_remove[user]}`;
-        cmds += ` & rmdir C:\\users\\${users.to_remove[user]} /s /q`;
+        cmds.push(`net user /delete ${users.to_remove[user]}`);
+        cmds.push(`rmdir C:\\users\\${users.to_remove[user]} /s /q`);
     }
-
-    return cmds;
 }
 
 function check_cmd_out(test) {
