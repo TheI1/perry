@@ -14,12 +14,17 @@ var users = {
         admin_element: null,
         cmd_result: "",
         names: [],
-        admins: []
+        names_out: null,
+        admins: [],
+        admins_out: null
     },
+    name_diff: null,
+    admin_diff: null,
     to_remove: [],
     to_lower: [],
     to_higher: [],
     passwords: {},
+    pass_btn: null,
     curr_usr: "",
     needed: []
 }
@@ -32,6 +37,10 @@ function copy_admin_cmd(text) {
     navigator.clipboard.writeText("net localgroup administrators");
 }
 
+function copy_pass() {
+    navigator.clipboard.writeText(users.passwords[users.curr_usr]);
+}
+
 function load() {
     setInterval(check, 50);
     users.target.src_element = document.getElementById("in_users");
@@ -39,30 +48,58 @@ function load() {
 
     users.test.cmd_element = document.getElementById("cmd_src");
     users.test.admin_element = document.getElementById("cmd_src_admin");
+
+    users.test.names_out = document.getElementById("cmd-names-out");
+    users.test.admins_out = document.getElementById("cmd-admins-out");
+
+    users.admin_diff = document.getElementById("admin-diff");
+    users.name_diff = document.getElementById("name-diff");
+
+    users.pass_btn = document.getElementById("copy-pass-btn");
 }
 
 function check() {
     check_target(users.target);
+    users.pass_btn.value = `Copy Password For: ${users.curr_usr}`;
+    
     check_cmd_out(users.test);
+    catigorize_usrs();
+
+    users.admin_diff.innerText = `TO PROMOTE:\n${users.to_higher.join(" ")}\n\nTO DEMOTE:\n${users.to_lower.join(" ")}`
+    users.name_diff.innerText = `TO DELETE:\n${users.to_remove.join(" ")}\n\nTO ADD:\n${users.needed.join(" ")}`
+
     create_cmds();
 }
 
-function create_cmds() {
+function catigorize_usrs() {
+    users.to_remove = users.test.names.filter(x => !users.target.all_user_names.includes(x));
+    users.needed = users.target.all_user_names.filter(x => !users.test.names.includes(x));
+    users.to_higher = users.target.admin_names.filter(x => !users.test.admins.includes(x));
+    users.to_lower = users.test.admins.filter(x => !users.target.admin_names.includes(x));
+}
 
+function create_cmds() {
+    
 }
 
 function check_cmd_out(test) {
-    test.names = extract_user_from_net(test.cmd_result);
-    test.admins = extract_user_from_net(test.admin_element.value)
+    test.names = extract_user_from_net(test.cmd_element.value);
+    test.names_out.innerText = "users: " + test.names.join(", ");
+
+    test.admins = extract_user_from_net(test.admin_element.value);
+    test.admins_out.innerText = "admins: " + test.admins.join(", ");
 }
 
 function extract_user_from_net(out) {
     var usrs = [];
     var lines = out.split("\n");
-    while (!lines[0].trim().replaceAll("-", "")) {
+    while (lines.length && !lines[0].trim().replaceAll("-", "")) {
         lines.splice(0, 1);
     }
     for (let line in lines) {
+        if (lines[line].toLowerCase().trim() == "the command completed successfully.".substring(0, lines[line].length)) {
+            break;
+        }
         var name = lines[line].slice(0, 24).trim();
         if (name) {
             usrs.push(name);

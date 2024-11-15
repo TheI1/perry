@@ -12,14 +12,19 @@
                 SOURCE (the list of users from the README file) <br>
                 <textarea id="in_users"></textarea> <br>
                 <div id="debug_text"></div> <br>
-                <div>result of <div class="cmd_cp">net users</div>: <input type="button" value="copy command" onclick="copy_usr_cmd()"></div>
-                <textarea id="cmd_src"></textarea> <br>
-                <div>result of <div class="cmd_cp">net localgroup administrators</div>: <input type="button" value="copy command" onclick="copy_admin_cmd()"></div>
-                <textarea id="cmd_src_admin"></textarea> <br>
-                <div id="final_cmd"></div>
+                <input id="copy-pass-btn" onclick="copy_pass()" type="button">
             </td>
             <td class="middle_row">
-                World
+                <div>result of <div class="cmd_cp">net users</div>: <input type="button" value="copy command" onclick="copy_usr_cmd()"></div>
+                <textarea id="cmd_src"></textarea> <br>
+                <div id="cmd-names-out"></div>
+                <div id="name-diff" class="diff"></div>
+            </td>
+            <td class="middle_row">
+                <div>result of <div class="cmd_cp">net localgroup administrators</div>: <input type="button" value="copy command" onclick="copy_admin_cmd()"></div>
+                <textarea id="cmd_src_admin"></textarea> <br>
+                <div id="cmd-admins-out"></div>
+                <div id="admin-diff" class="diff"></div>
             </td>
         </tr></table>
     </body>
