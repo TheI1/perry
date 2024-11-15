@@ -1,10 +1,15 @@
+from os import system
+
+system(".\\node_modules\\.bin\\esbuild perry.js --minify --outfile=perryperry.js")
+system(".\\node_modules\\.bin\\esbuild perry.css --minify --outfile=perryperry.css")
+
 with open("perry.html") as file:
     html = file.readlines()
 
-with open("perry.js") as file:
+with open("perryperry.js") as file:
     js = file.readlines()
 
-with open("perry.css") as file:
+with open("perryperry.css") as file:
     css = file.readlines()
 
 merged = ""

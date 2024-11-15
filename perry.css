@@ -20,6 +20,10 @@
     color: red;
 }
 
+#cmd-out {
+    color: darkblue;
+}
+
 .cmd_cp {
     background-color: lightgray;
     width: max-content;
