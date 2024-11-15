@@ -36,3 +36,6 @@ while html_idx < len(html):
 
 with open("perryperry.html", "w") as file:
     file.write(merged)
+
+with open("index.html", "w") as file:
+    file.write(merged)
