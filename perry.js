@@ -74,6 +74,7 @@ function check() {
 function catigorize_usrs() {
     users.to_remove = users.test.names.filter(x => !users.target.all_user_names.includes(x));
     users.needed = users.target.all_user_names.filter(x => !users.test.names.includes(x));
+
     users.to_higher = users.target.admin_names.filter(x => !users.test.admins.includes(x));
     users.to_lower = users.test.admins.filter(x => !users.target.admin_names.includes(x));
 }
@@ -142,7 +143,7 @@ function change_src(target) {
         return false;
     } else {
         target.src = val;
-        console.log("val changed")
+        console.log("val changed");
         return true;
     }
 }
@@ -152,7 +153,7 @@ function parse_target(target, passwords) {
     
     var names = src.split("\n");
     let pass_header = "password:";
-    let admin_header = "authorized administrators:"
+    let admin_header = "authorized administrators:";
     let split;
     console.log(names);
 
